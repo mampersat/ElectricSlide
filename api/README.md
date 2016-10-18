@@ -3,7 +3,7 @@
 Needs to support these calls
 * register a ride
 * associate a cardID with a dyn employee
-* return the current scoreboard
+* return the current scoreboard (contenttype HTML for display maybe)
 * reset the database
 
 Nice to have
