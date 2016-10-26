@@ -3,31 +3,23 @@
 import pigpio
 
 class decoder:
-
    """
    A class to read Wiegand codes of an arbitrary length.
-
    The code length and value are returned.
 
    EXAMPLE
 
    #!/usr/bin/env python
-
    import time
-
    import pigpio
-
    import wiegand
 
    def callback(bits, code):
       print("bits={} code={}".format(bits, code))
 
    pi = pigpio.pi()
-
    w = wiegand.decoder(pi, 14, 15, callback)
-
    time.sleep(300)
-
    w.cancel()
 
    pi.stop()
@@ -113,23 +105,16 @@ class decoder:
       self.cb_1.cancel()
 
 if __name__ == "__main__":
-
    import time
-
    import pigpio
-
    import wiegand
 
    def callback(bits, value):
       print("bits={} value={}".format(bits, value))
 
    pi = pigpio.pi()
-
    w = wiegand.decoder(pi, 14, 15, callback)
 
    time.sleep(300)
-
    w.cancel()
-
    pi.stop()
-
