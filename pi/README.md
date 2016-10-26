@@ -20,6 +20,9 @@ Because the Raspberry Pi's GPIO pins are only 3.3v tolerant, you'll need to use 
 
 In testing, I used a 1.8k resistor for R1 and a 3.3k resistor for R2 which should give us a V<sub>out</sub> = 3.24V which is [close enough](https://www.scribd.com/doc/101830961/GPIO-Pads-Control2).
 
+The following is an example of how I connected it all up:
+![schematic](https://github.com/mampersat/ElectricSlide/raw/master/pi/schematic.png "Schematic")
+
 ## Library
 RaspberryPI library [pigpio](http://abyz.co.uk/rpi/pigpio/examples.html#Python_wiegand_py) can read wiegand. You'll need to install a [daemon](http://abyz.co.uk/rpi/pigpio/download.html) to get the python code to work.
 
