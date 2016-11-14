@@ -34,6 +34,7 @@ class ElectricSlide(object):
                 pos += 1
                 print "{} - id:{} {} ({})".format(pos, row[0], row[1], row[2])
             cur.close()
+            return rows
 
     def new_user(self, user_id):
         print("HEY, You're NEW!!!!")
