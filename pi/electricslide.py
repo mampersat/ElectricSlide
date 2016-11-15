@@ -38,11 +38,11 @@ class ElectricSlide(object):
 
     def new_user(self, user_id):
         print("HEY, You're NEW!!!!")
+        camera = picamera.PiCamera()
         try:
-            camera = picamera.PiCamera()
             camera.capture('{}.jpg'.format(user_id))
         finally:
-            camera.Close()
+            camera.close()
 
         with self.con:
             cur = self.con.cursor()
