@@ -19,7 +19,7 @@ class ElectricSlide(object):
     def initialize_db(self):
         with self.con:
             cur = self.con.cursor()
-            cur.execute('CREATE TABLE users(id INT PRIMARY KEY, photo BLOB, count INT NOT NULL)')
+            cur.execute('CREATE TABLE users(id INT PRIMARY KEY, last_updated TIMESTAMP default CURRENT_TIMESTAMP, count INT NOT NULL)')
 
     def close_db(self):
         self.con.close()
