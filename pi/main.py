@@ -37,6 +37,7 @@ if __name__ == "__main__":
         top10Screen.updateTop10()
 
     w = reader.decoder(pi, 14, 15, callback)
+    top10Screen.updateTop10()
 
     try:
         while (True):
