@@ -91,19 +91,21 @@ class Top10(LcarsScreen):
         self.last_gadget.visible = False
 
     def top10_gadget(self, item, event, clock):
-        # self.hideInfoText()
+        self.updateTop10()
         self.top10_gadget.visible = True
         self.stats_gadget.visible = False
         self.last_gadget.visible = False
 
     def stats_gadget(self, item, event, clock):
-        # self.hideInfoText()
+        # Clear top10
+        self.top10_gadget.groups()[0].remove_sprites_of_layer(3)
         self.top10_gadget.visible = False
         self.stats_gadget.visible = True
         self.last_gadget.visible = False
 
     def last_gadget(self, item, event, clock):
-        # self.hideInfoText()
+        # Clear top10
+        self.top10_gadget.groups()[0].remove_sprites_of_layer(3)
         self.top10_gadget.visible = False
         self.stats_gadget.visible = False
         self.last_gadget.visible = True
