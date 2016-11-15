@@ -44,35 +44,15 @@ class Top10(LcarsScreen):
         # Get ip address of machine
         ip = [l for l in ([ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1], [[(s.connect(('8.8.8.8', 53)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]]) if l][0][0]
         all_sprites.add(LcarsText(colours.BLACK, (444, 612), ip), layer=1)
-
-        # Leader Board
-        rows = get_leaderboard()
-        i = 0
-        for row in rows:
-
-            y = 107 + int(i/5) * 180
-            x = 130 + i%5 * 130
-            text = "#" + str(i+1) + " - " + str(row[2])
-
-            all_sprites.add(LcarsText(colours.WHITE, (y+90 ,x) , text, 1.5))
-
-            # self.dashboard = LcarsImage("65573701.jpg", (y, x))
-            img = LcarsImage(str(row[0]) +".jpg", (y, x))
-            #print img.image #.__dict__ # img.image.transform.scale(picture, (1280, 720))
-            # img_scaled = pygame.transform.scale(img.image, (10,10))
-            img.image = pygame.transform.scale(img.image, (120, 90))
-            all_sprites.add(img,  layer=2)
-
-            i += 1
-
-        self.info_text = all_sprites.get_sprites_from_layer(3)
+        self.leaders = pygame.sprite.Group()
 
         # date display
         self.stardate = LcarsText(colours.BLUE, (12, 380), "STAR DATE 2711.05 17:54:32", 1.5)
         self.lastClockUpdate = 0
         all_sprites.add(self.stardate, layer=1)
 
-        self.top10_gadget = LcarsGifImage("assets/gadgets/lcars_anim2.gif", (235, 150), 100)
+        # self.top10_gadget = LcarsGifImage("assets/gadgets/lcars_anim2.gif", (235, 150), 100)
+        self.top10_gadget = LcarsText(colours.WHITE, (12, 12), "")
         self.top10_gadget.visible = False
         all_sprites.add(self.top10_gadget, layer=2)
 
@@ -91,7 +71,26 @@ class Top10(LcarsScreen):
         LcarsScreen.update(self, screenSurface, fpsClock)
 
     def updateTop10(self):
-        self.top10_gadget.visible = False
+        self.top10_gadget.groups()[0].remove_sprites_of_layer(3)
+        rows = get_leaderboard()
+        i = 0
+        for row in rows:
+            y = 107 + int(i/5) * 180
+            x = 130 + i%5 * 130
+            text = "#" + str(i+1) + " - " + str(row[2])
+
+            self.top10_gadget.groups()[0].add(LcarsText(colours.WHITE, (y+90 ,x) , text, 1.5), layer=3)
+
+            # self.dashboard = LcarsImage("65573701.jpg", (y, x))
+            img = LcarsImage(str(row[0]) +".jpg", (y, x))
+            #print img.image #.__dict__ # img.image.transform.scale(picture, (1280, 720))
+            # img_scaled = pygame.transform.scale(img.image, (10,10))
+            img.image = pygame.transform.scale(img.image, (120, 90))
+            self.top10_gadget.groups()[0].add(img, layer=3)
+            # all_sprites.add(img,  layer=2)
+            i += 1
+
+        self.top10_gadget.visible = True
         self.stats_gadget.visible = False
         self.last_gadget.visible = False
 
