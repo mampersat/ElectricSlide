@@ -37,12 +37,9 @@ class Top10(LcarsScreen):
                         layer=1)
         all_sprites.add(LcarsText(colours.ORANGE, (0, 135), "DynSlide Top 10", 2),
                         layer=1)
-        all_sprites.add(LcarsBlockMedium(colours.RED_BROWN, (145, 16), "TOP 10", self.logoutHandler),
-                        layer=1)
-        all_sprites.add(LcarsBlockSmall(colours.ORANGE, (211, 16), "STATS"),
-                        layer=1)
-        all_sprites.add(LcarsBlockLarge(colours.BEIGE, (249, 16), "LAST SLIDE"),
-                        layer=1)
+        all_sprites.add(LcarsBlockMedium(colours.RED_BROWN, (145, 16), "TOP 10", self.top10_gadget), layer=1)
+        all_sprites.add(LcarsBlockSmall(colours.ORANGE, (211, 16), "STATS", self.stats_gadget), layer=1)
+        all_sprites.add(LcarsBlockLarge(colours.BEIGE, (249, 16), "LAST SLIDE", self.last_gadget), layer=1)
 
         # Get ip address of machine
         ip = [l for l in ([ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1], [[(s.connect(('8.8.8.8', 53)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]]) if l][0][0]
@@ -55,7 +52,7 @@ class Top10(LcarsScreen):
 
             y = 107 + int(i/5) * 180
             x = 130 + i%5 * 130
-            text = "#" + str(i+1) + " - " + str(row[2]*3)
+            text = "#" + str(i+1) + " - " + str(row[2])
 
             all_sprites.add(LcarsText(colours.WHITE, (y+90 ,x) , text, 1.5))
 
@@ -75,21 +72,17 @@ class Top10(LcarsScreen):
         self.lastClockUpdate = 0
         all_sprites.add(self.stardate, layer=1)
 
-        self.sensor_gadget = LcarsGifImage("assets/gadgets/lcars_anim2.gif", (235, 150), 100)
-        self.sensor_gadget.visible = False
-        all_sprites.add(self.sensor_gadget, layer=2)
+        self.top10_gadget = LcarsGifImage("assets/gadgets/lcars_anim2.gif", (235, 150), 100)
+        self.top10_gadget.visible = False
+        all_sprites.add(self.top10_gadget, layer=2)
 
-        self.dashboard = LcarsImage("assets/gadgets/dashboard.png", (187, 232))
-        self.dashboard.visible = False
-        all_sprites.add(self.dashboard, layer=2)
+        self.stats_gadget = LcarsImage("assets/gadgets/dashboard.png", (187, 232))
+        self.stats_gadget.visible = False
+        all_sprites.add(self.stats_gadget, layer=2)
 
-        self.weather = LcarsImage("assets/weather.jpg", (188, 122))
-        self.weather.visible = False
-        all_sprites.add(self.weather, layer=2)
-
-        #all_sprites.add(LcarsMoveToMouse(colours.WHITE), layer=1)
-        self.beep1 = Sound("assets/audio/panel/201.wav")
-        Sound("assets/audio/panel/220.wav").play()
+        self.last_gadget = LcarsImage("assets/weather.jpg", (188, 122))
+        self.last_gadget.visible = False
+        all_sprites.add(self.last_gadget, layer=2)
 
     def update(self, screenSurface, fpsClock):
         if pygame.time.get_ticks() - self.lastClockUpdate > 1000:
@@ -97,36 +90,25 @@ class Top10(LcarsScreen):
             self.lastClockUpdate = pygame.time.get_ticks()
         LcarsScreen.update(self, screenSurface, fpsClock)
 
-    def handleEvents(self, event, fpsClock):
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            self.beep1.play()
+    def updateTop10(self):
+        self.top10_gadget.visible = False
+        self.stats_gadget.visible = False
+        self.last_gadget.visible = False
 
-        if event.type == pygame.MOUSEBUTTONUP:
-            return False
+    def top10_gadget(self, item, event, clock):
+        # self.hideInfoText()
+        self.top10_gadget.visible = False
+        self.stats_gadget.visible = True
+        self.last_gadget.visible = False
 
-    def hideInfoText(self):
-        if self.info_text[0].visible:
-            for sprite in self.info_text:
-                sprite.visible = False
+    def stats_gadget(self, item, event, clock):
+        # self.hideInfoText()
+        self.top10_gadget.visible = True
+        self.stats_gadget.visible = False
+        self.last_gadget.visible = False
 
-    def gaugesHandler(self, item, event, clock):
-        self.hideInfoText()
-        self.sensor_gadget.visible = False
-        self.dashboard.visible = True
-        self.weather.visible = False
-
-    def sensorsHandler(self, item, event, clock):
-        self.hideInfoText()
-        self.sensor_gadget.visible = True
-        self.dashboard.visible = False
-        self.weather.visible = False
-
-    def weatherHandler(self, item, event, clock):
-        self.hideInfoText()
-        self.sensor_gadget.visible = False
-        self.dashboard.visible = False
-        self.weather.visible = True
-
-    def logoutHandler(self, item, event, clock):
-        from screens.authorize import ScreenAuthorize
-        self.loadScreen(ScreenAuthorize())
+    def last_gadget(self, item, event, clock):
+        # self.hideInfoText()
+        self.top10_gadget.visible = False
+        self.stats_gadget.visible = False
+        self.last_gadget.visible = True

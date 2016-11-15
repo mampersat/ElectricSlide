@@ -6,7 +6,7 @@ import time
 import reader
 from PIL import Image
 from electricslide import ElectricSlide
-from screens.screens import ScreenMain
+from screens.top10 import Top10
 from ui.ui import UserInterface
 
 # global config
@@ -15,7 +15,7 @@ RESOLUTION = (800, 480)
 FPS = 60
 DEV_MODE = True
 
-firstScreen = ScreenMain()
+top10Screen = Top10()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -28,14 +28,13 @@ if __name__ == "__main__":
 
     pi = pigpio.pi()
 
-    firstScreen = ScreenMain()
-    ui = UserInterface(firstScreen, RESOLUTION, UI_PLACEMENT_MODE, FPS, DEV_MODE)
+    ui = UserInterface(top10Screen, RESOLUTION, UI_PLACEMENT_MODE, FPS, DEV_MODE)
 
     def callback(bits, value):
         print("bits={} value={}".format(bits, value))
         slide.ride(value)
         slide.get_leaderboard(limit=10)
-        firstScreen.updateInfoText()
+        top10Screen.updateTop10()
 
     w = reader.decoder(pi, 14, 15, callback)
 
