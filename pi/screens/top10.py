@@ -81,13 +81,9 @@ class Top10(LcarsScreen):
 
             self.top10_gadget.groups()[0].add(LcarsText(colours.WHITE, (y+90 ,x) , text, 1.5), layer=3)
 
-            # self.dashboard = LcarsImage("65573701.jpg", (y, x))
             img = LcarsImage(str(row[0]) +".jpg", (y, x))
-            #print img.image #.__dict__ # img.image.transform.scale(picture, (1280, 720))
-            # img_scaled = pygame.transform.scale(img.image, (10,10))
             img.image = pygame.transform.scale(img.image, (120, 90))
             self.top10_gadget.groups()[0].add(img, layer=3)
-            # all_sprites.add(img,  layer=2)
             i += 1
 
         self.top10_gadget.visible = True
@@ -96,14 +92,14 @@ class Top10(LcarsScreen):
 
     def top10_gadget(self, item, event, clock):
         # self.hideInfoText()
-        self.top10_gadget.visible = False
-        self.stats_gadget.visible = True
+        self.top10_gadget.visible = True
+        self.stats_gadget.visible = False
         self.last_gadget.visible = False
 
     def stats_gadget(self, item, event, clock):
         # self.hideInfoText()
-        self.top10_gadget.visible = True
-        self.stats_gadget.visible = False
+        self.top10_gadget.visible = False
+        self.stats_gadget.visible = True
         self.last_gadget.visible = False
 
     def last_gadget(self, item, event, clock):
