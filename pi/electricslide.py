@@ -9,6 +9,9 @@ import sys
 import time
 import reader
 from PIL import Image
+from ui.widgets.background import LcarsBackgroundImage, LcarsImage
+
+from ui.widgets.lcars_widgets import *
 
 
 class ElectricSlide(object):
@@ -36,30 +39,26 @@ class ElectricSlide(object):
             cur.close()
             return rows
 
-    def new_user(self, user_id):
-        print("HEY, You're NEW!!!!")
-        camera = picamera.PiCamera()
-        try:
-            camera.capture('{}.jpg'.format(user_id))
-        finally:
-            camera.close()
+    def new_user(self, user_id, screen):
+        screen.user_id = user_id
+        screen.newPic()
 
         with self.con:
             cur = self.con.cursor()
-            cur.execute("INSERT INTO users VALUES(?, ?, ?)", (user_id, '{}'.format(user_id), 1))
+            cur.execute("INSERT INTO users (id, count) VALUES(?, ?)", (user_id, 1))
             self.con.commit()
             cur.close()
 
-    def ride(self, user_id):
+    def ride(self, user_id, screen):
         with self.con:
             cur = self.con.cursor()
             cur.execute("SELECT count from users where id=?", (user_id, ))
             try:
                 count = cur.fetchone()[0]
                 count += 1
-                cur.execute("UPDATE users SET count=? WHERE id=?", (count, user_id))
+                cur.execute("UPDATE users SET count=?, last_updated=CURRENT_TIMESTAMP WHERE id=?", (count, user_id))
             except TypeError:
-                self.new_user(user_id)
+                self.new_user(user_id, screen)
             cur.close()
 
 

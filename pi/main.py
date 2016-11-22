@@ -32,7 +32,8 @@ if __name__ == "__main__":
 
     def callback(bits, value):
         print("bits={} value={}".format(bits, value))
-        slide.ride(value)
+        top10Screen.user_id = value
+        slide.ride(value, top10Screen)
         slide.get_leaderboard(limit=10)
         top10Screen.updateTop10()
 

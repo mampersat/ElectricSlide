@@ -1,3 +1,4 @@
+import picamera
 import socket
 from datetime import datetime
 import pygame
@@ -28,6 +29,11 @@ def get_leaderboard(limit = 10):
         return rows
 
 class Top10(LcarsScreen):
+    def __init__(self):
+        self.user_id = None
+        self.nextScreen = None
+        self.lastFrameTicks = 0
+
     def setup(self, all_sprites):
         all_sprites.add(LcarsBackgroundImage("assets/lcars_screen_1.png"),
                         layer=0)
@@ -39,7 +45,7 @@ class Top10(LcarsScreen):
                         layer=1)
         all_sprites.add(LcarsBlockMedium(colours.RED_BROWN, (145, 16), "TOP 10", self.top10_gadget), layer=1)
         all_sprites.add(LcarsBlockSmall(colours.ORANGE, (211, 16), "STATS", self.stats_gadget), layer=1)
-        all_sprites.add(LcarsBlockLarge(colours.BEIGE, (249, 16), "LAST SLIDE", self.last_gadget), layer=1)
+        all_sprites.add(LcarsBlockLarge(colours.BEIGE, (249, 16), "LAST SLIDER", self.last_gadget), layer=1)
 
         # Get ip address of machine
         try:
@@ -63,9 +69,10 @@ class Top10(LcarsScreen):
         self.stats_gadget.visible = False
         all_sprites.add(self.stats_gadget, layer=2)
 
-        self.last_gadget = LcarsImage("assets/weather.jpg", (188, 122))
+        self.last_gadget = LcarsText(colours.WHITE, (137, 130), "")
+        # self.last_gadget = LcarsImage("assets/weather.jpg", (188, 122))
         self.last_gadget.visible = False
-        all_sprites.add(self.last_gadget, layer=2)
+        all_sprites.add(self.last_gadget, layer=3)
 
     def update(self, screenSurface, fpsClock):
         if pygame.time.get_ticks() - self.lastClockUpdate > 1000:
@@ -91,7 +98,27 @@ class Top10(LcarsScreen):
 
         self.top10_gadget.visible = True
         self.stats_gadget.visible = False
-        self.last_gadget.visible = False
+        #self.last_gadget.visible = False
+
+    def newPic(self):
+        self.top10_gadget.groups()[0].remove_sprites_of_layer(3)
+        try:
+            self.top10_gadget.groups()[0].add(LcarsText(colours.WHITE, (107, 130), "HEY, You're NEW!!!", 1.5), layer=3)
+            self.top10_gadget.groups()[0].add(LcarsText(colours.WHITE, (137, 130), "We need to take your picture...", 1.5), layer=3)
+            self.top10_gadget.groups()[0].add(LcarsBlockLarge(colours.BEIGE, (170, 130), "Take Picture", self.handlePic), layer=3)
+        except:
+            pass
+
+    def handlePic(self, item, event, clock):
+        camera = picamera.PiCamera()
+        try:
+            if self.user_id:
+                camera.capture('{}.jpg'.format(self.user_id))
+            else:
+                print("No can do")
+        finally:
+            camera.close()
+
 
     def top10_gadget(self, item, event, clock):
         self.updateTop10()
@@ -109,6 +136,7 @@ class Top10(LcarsScreen):
     def last_gadget(self, item, event, clock):
         # Clear top10
         self.top10_gadget.groups()[0].remove_sprites_of_layer(3)
+        self.newPic()
+        self.last_gadget.visible = True
         self.top10_gadget.visible = False
         self.stats_gadget.visible = False
-        self.last_gadget.visible = True
